@@ -4,9 +4,13 @@ const app = express();
 const logger = require('morgan');
 const port = process.env.PORT || 8080;
 
+const { usersRouter } = require('./routers/usersRouter');
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger("dev"));
+
+app.use('/api/users', usersRouter);
 
 app.use((req, res) => {
     res.status(400).send("Page wasn't found");
