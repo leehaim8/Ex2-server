@@ -5,6 +5,7 @@ const { Schema } = mongoose;
 
 const courseSchema = new Schema({
     _id: { type: ObjectId },
+    courseName: { type: String },
     creditPoints: { type: Number }
 });
 

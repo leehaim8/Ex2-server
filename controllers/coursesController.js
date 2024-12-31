@@ -65,6 +65,7 @@ const coursesController = {
                 const course = user.courses.find(course => course._id.toString() === courseID);
                 if (course) {
                     course.creditPoints = creditPoints;
+                    course.courseName = courseName;
                     await user.save();
                 }
             }
