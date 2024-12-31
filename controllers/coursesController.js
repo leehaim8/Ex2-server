@@ -55,6 +55,11 @@ const coursesController = {
         }
 
         try {
+            const existingCourse = await Course.findOne({ courseName });
+            if (existingCourse) {
+                return res.status(400).json({ message: "A course with this name already exists, please try again." });
+            }
+            
             const updateCourse = await Course.findByIdAndUpdate(courseID, { courseName, lecturer, creditPoints, maxStudents, numberOfRegister, currentStudents }, { new: true });
             if (!updateCourse) {
                 return res.status(404).json({ message: "Course not found" });
