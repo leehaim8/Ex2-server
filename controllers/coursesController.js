@@ -16,6 +16,10 @@ const coursesController = {
             return res.status(401).json({ message: "One of the fields is missing. Please enter all fields." });
         }
 
+        if (creditPoints < 3 || creditPoints > 5) {
+            return res.status(400).json({ message: "The creditPoint should be be between 3 to 5." });
+        }
+
         try {
             const existingCourse = await Course.findOne({ courseName });
             if (existingCourse) {
@@ -44,6 +48,10 @@ const coursesController = {
         const { courseName, lecturer, creditPoints, maxStudents, numberOfRegister, currentStudents } = req.body;
         if (!courseName || !lecturer || !creditPoints || !maxStudents) {
             return res.status(401).json({ message: "One of the fields is missing. Please enter all fields." });
+        }
+
+        if (creditPoints < 3 || creditPoints > 5) {
+            return res.status(400).json({ message: "The credit points should be between 3 and 5." });
         }
 
         try {
