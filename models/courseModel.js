@@ -7,6 +7,7 @@ const courseSchema = new Schema({
     lecturer: { type: String, required: true },
     creditPoints: { type: Number, required: true },
     maxStudents: { type: Number, required: true },
+    numberOfRegister: { type: Number, required: true },
     currentStudents: [String]
 }, { collection: "courses" });
 
