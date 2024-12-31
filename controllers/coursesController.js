@@ -1,4 +1,5 @@
 const Course = require("../models/courseModel");
+const User = require("../models/userModel");
 
 const coursesController = {
     async getCourses(req, res) {
@@ -23,7 +24,6 @@ const coursesController = {
 
             const numberOfRegister = 0;
             const currentStudents = [];
-
             const newCourse = new Course({
                 courseName,
                 lecturer,
@@ -41,18 +41,40 @@ const coursesController = {
     },
     async updateCourse(req, res) {
         const courseID = req.params.courseID;
-        const { courseName, lecturer, creditPoints, maxStudents, numberOfRegister, currentStudents} = req.body;
+        const { courseName, lecturer, creditPoints, maxStudents, numberOfRegister, currentStudents } = req.body;
         if (!courseName || !lecturer || !creditPoints || !maxStudents) {
             return res.status(401).json({ message: "One of the fields is missing. Please enter all fields." });
         }
 
         try {
-            const updateCourse = await Course.findByIdAndUpdate(courseID, { courseName, lecturer, creditPoints, maxStudents, numberOfRegister, currentStudents },{ new: true });
+            const updateCourse = await Course.findByIdAndUpdate(courseID, { courseName, lecturer, creditPoints, maxStudents, numberOfRegister, currentStudents }, { new: true });
             if (!updateCourse) {
                 return res.status(404).json({ message: "Course not found" });
             }
 
             res.status(200).json({ message: "Course updated successfully", course: updateCourse });
+        } catch (error) {
+            res.status(500).json({ message: "Server error", error });
+        }
+    },
+    async deleteCourse(req, res) {
+        const courseID = req.params.courseID;
+
+        try {
+            const course = await Course.findById(courseID);
+            if (!course) {
+                return res.status(404).json({ message: "Course not found" });
+            }
+
+            const deletedCourse = await Course.findByIdAndDelete(courseID);
+
+            const usersWithCourse = await User.find({ "courses._id": courseID });
+            for (const user of usersWithCourse) {
+                user.courses = user.courses.filter(course => course._id.toString() !== courseID);
+                await user.save();
+            }
+
+            res.status(200).json({ message: "Course deleted successfully", course });
         } catch (error) {
             res.status(500).json({ message: "Server error", error });
         }
