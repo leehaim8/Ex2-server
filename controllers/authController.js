@@ -47,14 +47,29 @@ const authController = {
 
             const payload = { username: user.username, role: user.role };
             const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '10m' })
-            res.status(200).json({ 
-                message: "User logged in successfully", 
-                token, 
-                user: { username: user.username, role: user.role } 
+            res.status(200).json({
+                message: "User logged in successfully",
+                token,
+                user: { username: user.username, role: user.role }
             });
         } catch (error) {
             res.status(500).json({ message: "Server error", error });
         }
+    },
+    async authToken(req, res, next) {
+        const token = req.headers['authorization'];
+        if (!token) {
+            return res.status(401).json({ message: "Token is required" });
+        }
+
+        jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
+            if (err) {
+                return res.status(401).json({ message: "Invalid token" });
+            }
+
+            req.user = decoded;
+            next();
+        });
     }
 };
 
