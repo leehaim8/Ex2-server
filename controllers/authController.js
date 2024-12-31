@@ -61,15 +61,22 @@ const authController = {
         if (!token) {
             return res.status(401).json({ message: "Token is required" });
         }
+            jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
+                if (err) {
+                    return res.status(401).json({ message: "Invalid token" });
+                }
 
-        jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
-            if (err) {
-                return res.status(401).json({ message: "Invalid token" });
+                req.user = decoded;
+                next();
+            });
+    },
+    authRole(role) {
+        return (req, res, next) => {
+            if (req.user.role !== role) {
+                return res.status(403).json({ message: `Access denied: ${role}s only` });
             }
-
-            req.user = decoded;
             next();
-        });
+        };
     }
 };
 
