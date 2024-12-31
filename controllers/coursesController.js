@@ -52,6 +52,15 @@ const coursesController = {
                 return res.status(404).json({ message: "Course not found" });
             }
 
+            const usersWithCourse = await User.find({ "courses._id": courseID });
+            for (const user of usersWithCourse) {
+                const course = user.courses.find(course => course._id.toString() === courseID);
+                if (course) {
+                    course.creditPoints = creditPoints;
+                    await user.save();
+                }
+            }
+
             res.status(200).json({ message: "Course updated successfully", course: updateCourse });
         } catch (error) {
             res.status(500).json({ message: "Server error", error });

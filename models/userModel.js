@@ -21,12 +21,3 @@ const userSchema = new Schema({
 
 const User = mongoose.model("Users", userSchema);
 module.exports = User;
-
-// const usersWithCourse = await User.find({ "courses._id": courseID });
-// for (const user of usersWithCourse) {
-//     const course = user.courses.find(course => course._id.toString() === courseID);
-//     if (course) {
-//         course.creditPoints = creditPoints;
-//         await user.save();
-//     }
-// }
