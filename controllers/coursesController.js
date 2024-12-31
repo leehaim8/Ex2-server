@@ -38,7 +38,26 @@ const coursesController = {
         } catch (error) {
             res.status(500).json({ message: "Server error", error });
         }
+    },
+    async updateCourse(req, res) {
+        const courseID = req.params.courseID;
+        const { courseName, lecturer, creditPoints, maxStudents, numberOfRegister, currentStudents} = req.body;
+        if (!courseName || !lecturer || !creditPoints || !maxStudents) {
+            return res.status(401).json({ message: "One of the fields is missing. Please enter all fields." });
+        }
+
+        try {
+            const updateCourse = await Course.findByIdAndUpdate(courseID, { courseName, lecturer, creditPoints, maxStudents, numberOfRegister, currentStudents },{ new: true });
+            if (!updateCourse) {
+                return res.status(404).json({ message: "Course not found" });
+            }
+
+            res.status(200).json({ message: "Course updated successfully", course: updateCourse });
+        } catch (error) {
+            res.status(500).json({ message: "Server error", error });
+        }
     }
+
 };
 
 module.exports = { coursesController };
