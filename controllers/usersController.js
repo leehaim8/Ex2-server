@@ -52,6 +52,7 @@ const usersController = {
             await user.save();
 
             course.numberOfRegister += 1;
+            course.currentStudents = [...course.currentStudents, user.fullName];
             await course.save();
 
             res.status(200).json({ message: "Course added successfully", user });
