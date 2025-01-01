@@ -6,5 +6,6 @@ const usersRouter = new Router();
 
 usersRouter.get('/:userID', authController.authToken, authController.authRole("student"), usersController.getCoursesOfUser);
 usersRouter.post('/:userID/:courseID', authController.authToken, authController.authRole("student"), usersController.addCoursesToUser);
+usersRouter.delete('/:userID/:courseID', authController.authToken, authController.authRole("student"), usersController.deleteCoursesToUser);
 
 module.exports = { usersRouter };

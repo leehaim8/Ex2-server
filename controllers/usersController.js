@@ -58,6 +58,36 @@ const usersController = {
         } catch (error) {
             res.status(500).json({ message: "Server error", error });
         }
+    },
+    async deleteCoursesToUser(req, res) {
+        const { userID, courseID } = req.params;
+        try {
+            const user = await User.findById(userID);
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+
+            const course = await Course.findById(courseID);
+            if (!course) {
+                return res.status(404).json({ message: "Course not found" });
+            }
+
+            const userIsRegister = await User.findOne({ _id: userID, "courses._id": courseID });
+            if (!userIsRegister) {
+                return res.status(400).json({ message: "User is not enrolled in this course." });
+            }
+
+            user.courses = user.courses.filter(c => c.courseName !== course.courseName);
+            await user.save();
+
+            course.numberOfRegister -= 1;
+            course.currentStudents = course.currentStudents.filter(studentName => studentName !== user.fullName);
+            await course.save();
+
+            res.status(200).json({ message: "Course deleted successfully", user });
+        } catch (error) {
+            res.status(500).json({ message: "Server error", error });
+        }
     }
 };
 
