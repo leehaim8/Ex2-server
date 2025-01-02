@@ -15,16 +15,14 @@ const authController = {
                 return res.status(400).json({ message: "The role is not valid, please try again." });
             }
 
-            const academicYearValue = academicYear || null;
-            const courses = [];
             const newUser = new User({
                 fullName,
                 username,
                 password,
                 role,
                 address,
-                academicYear: academicYearValue,
-                courses
+                academicYear,
+                courses: []
             });
 
             await newUser.save();
@@ -46,7 +44,9 @@ const authController = {
             }
 
             const payload = { username: user.username, role: user.role };
-            const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '10m' })
+            const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '10m' });
+
+            res.header('Authorization', `Bearer ${token}`);
             res.status(200).json({
                 message: "User logged in successfully",
                 token,
@@ -57,18 +57,18 @@ const authController = {
         }
     },
     async authToken(req, res, next) {
-        const token = req.headers['authorization'];
+        const token = req.headers['authorization'].split(' ')[1];
         if (!token) {
             return res.status(401).json({ message: "Token is required" });
         }
-            jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
-                if (err) {
-                    return res.status(401).json({ message: "Invalid token" });
-                }
+        jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
+            if (err) {
+                return res.status(401).json({ message: "Invalid token" });
+            }
 
-                req.user = decoded;
-                next();
-            });
+            req.user = decoded;
+            next();
+        });
     },
     authRole(role) {
         return (req, res, next) => {
