@@ -59,7 +59,7 @@ const coursesController = {
             if (existingCourse) {
                 return res.status(400).json({ message: "A course with this name already exists, please try again." });
             }
-            
+
             const updateCourse = await Course.findByIdAndUpdate(courseID, { courseName, lecturer, creditPoints, maxStudents, numberOfRegister, currentStudents }, { new: true });
             if (!updateCourse) {
                 return res.status(404).json({ message: "Course not found" });
@@ -67,7 +67,7 @@ const coursesController = {
 
             const usersWithCourse = await User.find({ "courses._id": courseID });
             for (const user of usersWithCourse) {
-                const course = user.courses.find(course => course._id.toString() === courseID);
+                const course = user.courses.find(course => course._id === courseID);
                 if (course) {
                     course.creditPoints = creditPoints;
                     course.courseName = courseName;
@@ -93,7 +93,7 @@ const coursesController = {
 
             const usersWithCourse = await User.find({ "courses._id": courseID });
             for (const user of usersWithCourse) {
-                user.courses = user.courses.filter(course => course._id.toString() !== courseID);
+                user.courses = user.courses.filter(course => course._id !== courseID);
                 await user.save();
             }
 

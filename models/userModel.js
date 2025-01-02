@@ -17,7 +17,6 @@ const userSchema = new Schema({
     address: { type: String, required: true },
     academicYear: { type: Number },
     courses: [courseSchema]
-
 }, { collection: "users" });
 
 const User = mongoose.model("Users", userSchema);

@@ -1,6 +1,12 @@
+const { ObjectId } = require("bson");
 const mongoose = require("mongoose");
 const { type } = require("os");
 const { Schema } = mongoose;
+
+const userSchema = new Schema({
+    _id: {type: ObjectId},
+    fullName: {type: String}
+});
 
 const courseSchema = new Schema({
     courseName: { type: String, required: true },
@@ -8,7 +14,7 @@ const courseSchema = new Schema({
     creditPoints: { type: Number, required: true },
     maxStudents: { type: Number, required: true },
     numberOfRegister: { type: Number, required: true },
-    currentStudents: [String]
+    currentStudents: [userSchema]
 }, { collection: "courses" });
 
 const Course = mongoose.model("courses", courseSchema);
