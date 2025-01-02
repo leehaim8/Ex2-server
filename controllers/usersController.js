@@ -84,7 +84,9 @@ const usersController = {
             user.courses = user.courses.filter(c => c.courseName !== course.courseName);
             await user.save();
 
-            course.numberOfRegister -= 1;
+            if (course.numberOfRegister > 0){
+                course.numberOfRegister -= 1;
+            }
             course.currentStudents = course.currentStudents.filter(student => student._id.toString() !== userID.toString());
             await course.save();
 
