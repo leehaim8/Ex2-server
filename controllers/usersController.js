@@ -52,7 +52,10 @@ const usersController = {
             await user.save();
 
             course.numberOfRegister += 1;
-            course.currentStudents = [...course.currentStudents, user.fullName];
+            course.currentStudents = [...course.currentStudents, {
+                _id: user._id,
+                fullName: user.fullName
+            }];
             await course.save();
 
             res.status(200).json({ message: "Course added successfully", user });
@@ -82,7 +85,7 @@ const usersController = {
             await user.save();
 
             course.numberOfRegister -= 1;
-            course.currentStudents = course.currentStudents.filter(studentName => studentName !== user.fullName);
+            course.currentStudents = course.currentStudents.filter(student => student._id.toString() !== userID.toString());
             await course.save();
 
             res.status(200).json({ message: "Course deleted successfully", user });
