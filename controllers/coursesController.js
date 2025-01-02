@@ -21,6 +21,11 @@ const coursesController = {
         }
 
         try {
+            const user = await User.findOne({ fullName: lecturer, role: "staff" });
+            if (!user) {
+                return res.status(400).json({ message: "Lecturer does not exist in the system." });
+            }
+
             const existingCourse = await Course.findOne({ courseName });
             if (existingCourse) {
                 return res.status(400).json({ message: "A course with this name already exists, please try again." });

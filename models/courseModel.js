@@ -4,8 +4,8 @@ const { type } = require("os");
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-    _id: {type: ObjectId},
-    fullName: {type: String}
+    _id: { type: ObjectId },
+    fullName: { type: String }
 });
 
 const courseSchema = new Schema({
