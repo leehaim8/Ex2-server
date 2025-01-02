@@ -19,5 +19,13 @@ const userSchema = new Schema({
     courses: [courseSchema]
 }, { collection: "users" });
 
+userSchema.pre("save", function (next) {
+    if (this.role !== "student") {
+        this.academicYear = undefined;
+        this.courses = undefined;
+    }
+    next();
+});
+
 const User = mongoose.model("Users", userSchema);
 module.exports = User;
