@@ -12,7 +12,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger("dev"));
 
-//app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/courses', coursesRouter);
 
