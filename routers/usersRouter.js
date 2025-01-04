@@ -1,11 +1,14 @@
 const { Router } = require('express');
 const { usersController } = require('../controllers/usersController');
-const { authController } = require('../controllers/authController');
+// const { authMiddleware } = require('../controllers/authMiddleware');
+const { authMiddleware } = require('../middleware/authMiddleware')
 
 const usersRouter = new Router();
 
-usersRouter.get('/:userID', authController.authToken, authController.authRole("student"), usersController.getCoursesOfUser);
-usersRouter.post('/:userID/:courseID', authController.authToken, authController.authRole("student"), usersController.addCoursesToUser);
-usersRouter.delete('/:userID/:courseID', authController.authToken, authController.authRole("student"), usersController.deleteCoursesToUser);
+usersRouter.post('/register', usersController.register);
+usersRouter.post('/login', usersController.login);
+usersRouter.get('/:userID', authMiddleware.authToken, authMiddleware.authRole("student"), usersController.getCoursesOfUser);
+usersRouter.post('/:userID/:courseID', authMiddleware.authToken, authMiddleware.authRole("student"), usersController.addCoursesToUser);
+usersRouter.delete('/:userID/:courseID', authMiddleware.authToken, authMiddleware.authRole("student"), usersController.deleteCoursesToUser);
 
 module.exports = { usersRouter };
