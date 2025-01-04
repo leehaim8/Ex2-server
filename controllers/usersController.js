@@ -5,6 +5,10 @@ const jwt = require("jsonwebtoken");
 const usersController = {
     async register(req, res) {
         const { fullName, username, password, role, address, academicYear } = req.body;
+        if(!fullName || !username || !password || !role || !address){
+            return res.status(401).json({ message: "One of the fields is missing. Please enter all fields." });
+        }
+
         try {
             const existingUser = await User.findOne({ username });
             if (existingUser) {
@@ -15,6 +19,11 @@ const usersController = {
                 return res.status(400).json({ message: "The role is not valid, please try again." });
             }
 
+            if (role.toLowerCase() === "student" && !academicYear) {
+                return res.status(401).json({ message: "You are a student user, you need to enter which academic year you are in." });
+            }
+            console.log(role, academicYear);
+            
             const newUser = new User({
                 fullName,
                 username,
