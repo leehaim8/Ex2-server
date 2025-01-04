@@ -4,7 +4,6 @@ const app = express();
 const logger = require('morgan');
 const port = process.env.PORT || 8080;
 
-const { authRouter } = require('./routers/authRouter');
 const { usersRouter } = require('./routers/usersRouter');
 const { coursesRouter } = require('./routers/coursesRouter');
 

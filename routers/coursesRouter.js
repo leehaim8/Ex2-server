@@ -1,6 +1,5 @@
 const { Router } = require('express');
 const { coursesController } = require('../controllers/coursesController');
-// const { authMiddleware } = require('../controllers/authMiddleware');
 const { authMiddleware } = require('../middleware/authMiddleware')
 const coursesRouter = new Router();
 
