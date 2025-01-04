@@ -50,7 +50,7 @@ const coursesController = {
     },
     async updateCourse(req, res) {
         const courseID = req.params.courseID;
-        const { courseName, lecturer, creditPoints, maxStudents, numberOfRegister } = req.body;
+        const { courseName, lecturer, creditPoints, maxStudents } = req.body;
         if (!courseName || !lecturer || !creditPoints || !maxStudents) {
             return res.status(401).json({ message: "One of the fields is missing. Please enter all fields." });
         }
@@ -65,9 +65,14 @@ const coursesController = {
                 return res.status(400).json({ message: "A course with this name already exists, please try again." });
             }
 
-            const updateCourse = await Course.findByIdAndUpdate(courseID, { courseName, lecturer, creditPoints, maxStudents, numberOfRegister }, { new: true });
+            const updateCourse = await Course.findByIdAndUpdate(courseID, { courseName, lecturer, creditPoints, maxStudents }, { new: true });
             if (!updateCourse) {
                 return res.status(404).json({ message: "Course not found" });
+            }
+
+            const user = await User.findOne({ fullName: lecturer, role: "staff" });
+            if (!user) {
+                return res.status(400).json({ message: "Lecturer does not exist in the system." });
             }
 
             const usersWithCourse = await User.find({ "courses._id": courseID });
